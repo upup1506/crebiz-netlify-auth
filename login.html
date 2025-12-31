@@ -224,7 +224,7 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ id, password: pw })
+          body: JSON.stringify({ id, pw })
         });
 
         const data = await res.json().catch(() => ({}));
