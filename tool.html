@@ -623,6 +623,36 @@
   </style>
 
   <script>
+
+// ✅ 로그인 안 했으면 tool.html 진입 즉시 차단
+async function requireLoginOrRedirect() {
+  try {
+    const res = await fetch("/.netlify/functions/me", { credentials: "include" });
+    const data = await res.json();
+
+    if (!data.loggedIn) {
+      // 로그인 안 했으면 즉시 login으로 이동
+      location.replace("/login.html");
+      return null;
+    }
+    return data.user; // {id, name}
+  } catch (e) {
+    // 네트워크/서버 문제여도 안전하게 로그인 페이지로 보냄
+    location.replace("/login.html");
+    return null;
+  }
+}
+// ✅ 페이지 로드 시 로그인 체크 실행
+document.addEventListener("DOMContentLoaded", async () => {
+  const user = await requireLoginOrRedirect();
+  if (!user) return;
+
+  // ✅ 여기 아래부터는 "로그인 된 사용자만" 실행되는 영역
+  console.log("로그인 사용자:", user);
+});
+
+
+    
     // 로그인 세션 키 (login.html 과 동일)
     const AUTH_KEY = "yt_tool_auth_user";
 
