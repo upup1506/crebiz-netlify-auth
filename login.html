@@ -1,203 +1,101 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>CreBiz YouTube Analytics Tool - Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CreBiz Login</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
-      background: linear-gradient(135deg, #eef2ff, #f9fafb);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .card {
-      width: 100%;
-      max-width: 380px;
-      background: #ffffff;
-      border-radius: 22px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
-      padding: 28px 24px 22px;
-      box-sizing: border-box;
-    }
-    .title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      text-align: center;
-      letter-spacing: -0.02em;
-    }
-    .subtitle {
-      font-size: 13px;
-      color: #6b7280;
-      text-align: center;
-      margin-bottom: 22px;
-      line-height: 1.5;
-    }
-    .field {
-      margin-bottom: 14px;
-    }
-    .field label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
-      color: #374151;
-    }
-    .field input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 9px 11px;
-      border-radius: 9px;
-      border: 1px solid #d1d5db;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-      background: #f9fafb;
-    }
-    .field input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.12);
-      background: #ffffff;
-    }
-    .btn {
-      width: 100%;
-      padding: 10px 0;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      background: #2563eb;
-      color: #ffffff;
-      margin-top: 6px;
-      transition: transform 0.08s ease, box-shadow 0.1s ease, background 0.1s ease;
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
-    }
-    .btn:hover {
-      background: #1d4ed8;
-    }
-    .btn:active {
-      transform: translateY(1px);
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
-    }
-    .error {
-      margin-top: 8px;
-      font-size: 12px;
-      color: #dc2626;
-      text-align: center;
-      min-height: 16px;
-    }
-    .hint {
-      margin-top: 14px;
-      font-size: 12px;
-      color: #9ca3af;
-      text-align: center;
-      line-height: 1.4;
-    }
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans KR,Arial;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b1220;color:#e5e7eb}
+    .card{width:min(420px,92vw);background:#111827;border:1px solid #1f2937;border-radius:18px;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+    h1{font-size:18px;margin:0 0 10px}
+    .desc{font-size:13px;opacity:.8;margin:0 0 18px;line-height:1.5}
+    label{display:block;font-size:13px;margin:12px 0 6px;opacity:.9}
+    input{width:100%;box-sizing:border-box;padding:11px 12px;border-radius:10px;border:1px solid #334155;background:#0b1220;color:#e5e7eb;outline:none}
+    input:focus{border-color:#60a5fa}
+    button{width:100%;margin-top:14px;padding:11px 12px;border-radius:999px;border:0;background:#2563eb;color:white;font-weight:700;cursor:pointer}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .err{margin-top:10px;color:#f87171;font-size:13px;min-height:18px}
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="title">CreBiz YouTube Analytics Tool</div>
-    <div class="subtitle">
-      결제 완료 후 안내받은<br />
-      <b>아이디 / 비밀번호</b>를 입력해주세요.
-    </div>
+    <h1>CreBiz YouTube Analytics Tool</h1>
+    <p class="desc">아이디/비밀번호를 입력해주세요. (계정 정보는 이 페이지에 저장되지 않습니다)</p>
 
-    <form id="loginForm">
-      <div class="field">
-        <label for="loginId">아이디</label>
-        <input type="text" id="loginId" autocomplete="username" />
-      </div>
-      <div class="field">
-        <label for="loginPw">비밀번호</label>
-        <input type="password" id="loginPw" autocomplete="current-password" />
-      </div>
-      <button type="submit" class="btn">로그인</button>
-      <div class="error" id="errorMsg"></div>
+    <form id="form">
+      <label for="id">아이디</label>
+      <input id="id" autocomplete="username" />
+
+      <label for="pw">비밀번호</label>
+      <input id="pw" type="password" autocomplete="current-password" />
+
+      <button id="btn" type="submit">로그인</button>
+      <div class="err" id="err"></div>
     </form>
-
-    <div class="hint">
-      🔒 이 페이지와 계정 정보는<br />
-      유료 회원 전용입니다. 외부 공유를 삼가 주세요.<br /><br />
-      <b>© DreamShare Inc. All rights reserved.</b>
-    </div>
   </div>
 
   <script>
-    // ✅ (선택) 도메인 락
-    (function domainLock() {
-      const allowed = ["localhost", "127.0.0.1", "visionary-biscochitos-fdcf17.netlify.app"];
-      const host = window.location.hostname;
-      if (!allowed.includes(host)) {
-        document.body.innerHTML =
-          "<h2 style='text-align:center;margin-top:80px;'>허용되지 않은 도메인입니다.</h2>";
-        throw new Error("Unauthorized domain: " + host);
+    // ✅ login.html 들어오면 혹시 남아있던 쿠키 세션을 정리(선택)
+    // (원하면 주석 해제)
+    // fetch("/.netlify/functions/logout", { method: "POST", credentials: "include" });
+
+    const form = document.getElementById("form");
+    const btn = document.getElementById("btn");
+    const err = document.getElementById("err");
+
+    function setError(msg) { err.textContent = msg || ""; }
+    function setLoading(on) {
+      btn.disabled = !!on;
+      btn.textContent = on ? "로그인 중..." : "로그인";
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setError("");
+
+      const id = (document.getElementById("id").value || "").trim();
+      const pw = (document.getElementById("pw").value || "").trim();
+
+      if (!id || !pw) {
+        setError("아이디/비밀번호를 입력해주세요.");
+        return;
       }
-    })();
 
-    // ✅ 계정 목록 (실제 아이디/비번으로 교체해서 사용)
-    const USERS = [
-      { id: "admin", pw: "pw1!", name: "최고 관리자" },
-      { id: "lxy520619", pw: "luoxiaoyan1!", name: "Luoxiaoyan" },
-      { id: "share01", pw: "share01!", name: "share01" },
-      { id: "ljw", pw: "ljw1!", name: "이장욱" },
-      { id: "tjrwo21c", pw: "ksj1207!", name: "김석재" },
-      { id: "project88", pw: "project88!", name: "동서울대 프로젝트팀" },
-      { id: "hellojiyeon", pw: "hellojiyeon!", name: "김지연" },
-      { id: "kcsa3223", pw: "kcsa3223!", name: "이경천" }
-    ];
+      setLoading(true);
 
-    const AUTH_KEY = "yt_tool_auth_user";
-
-    document.addEventListener("DOMContentLoaded", () => {
-      // login.html = 강제 로그아웃용
       try {
-        localStorage.removeItem(AUTH_KEY);
-      } catch (e) {}
+        const res = await fetch("/.netlify/functions/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ id, pw })
+        });
 
-      const form = document.getElementById("loginForm");
-      const idInput = document.getElementById("loginId");
-      const pwInput = document.getElementById("loginPw");
-      const errorMsg = document.getElementById("errorMsg");
+        // ✅ 우리 login.js는 성공 시 {ok:true} JSON
+        // 실패 시에는 텍스트일 수도 있어서 안전하게 처리
+        let data = null;
+        const text = await res.text();
+        try { data = JSON.parse(text); } catch { data = null; }
 
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const id = (idInput.value || "").trim();
-        const pw = (pwInput.value || "").trim();
-
-        if (!id || !pw) {
-          errorMsg.textContent = "아이디와 비밀번호를 모두 입력해주세요.";
+        if (!res.ok) {
+          setError(data?.message || text || "로그인 실패");
+          setLoading(false);
           return;
         }
 
-        const found = USERS.find((u) => u.id === id && u.pw === pw);
-        if (!found) {
-          errorMsg.textContent = "아이디 또는 비밀번호가 올바르지 않습니다.";
+        if (!data || data.ok !== true) {
+          setError("로그인 실패");
+          setLoading(false);
           return;
         }
 
-        try {
-          localStorage.setItem(
-            AUTH_KEY,
-            JSON.stringify({
-              id: found.id,
-              name: found.name,
-              loggedAt: new Date().toISOString()
-            })
-          );
-        } catch (e) {
-          // localStorage 실패해도 일단 이동
-        }
-
-        errorMsg.textContent = "";
-        window.location.href = "tool.html";
-      });
+        // ✅ 성공: 서버가 HttpOnly 세션 쿠키를 심어줌
+        location.replace("/tool.html");
+      } catch (e2) {
+        setError("네트워크 오류. 잠시 후 다시 시도해주세요.");
+      } finally {
+        setLoading(false);
+      }
     });
   </script>
 </body>
