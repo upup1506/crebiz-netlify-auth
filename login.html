@@ -203,16 +203,6 @@
       return r;
     }
 
-    // 이미 로그인되어 있으면 바로 이동(UX)
-    (async function autoSkipIfLoggedIn(){
-      try{
-        const res = await fetch("/.netlify/functions/me", { credentials: "include" });
-        const data = await res.json();
-        if (data && data.loggedIn) {
-          location.replace(getRedirectTo());
-        }
-      }catch(e){ /* 조용히 무시 */ }
-    })();
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
