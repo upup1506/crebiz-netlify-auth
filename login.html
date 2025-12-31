@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>CreBiz YouTube Analytics Tool - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
+      background: linear-gradient(135deg, #eef2ff, #f9fafb);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      width: 100%;
+      max-width: 380px;
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+      padding: 28px 24px 22px;
+      box-sizing: border-box;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-align: center;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+    .field {
+      margin-bottom: 14px;
+    }
+    .field label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #374151;
+    }
+    .field input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 9px 11px;
+      border-radius: 9px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background: #f9fafb;
+    }
+    .field input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.12);
+      background: #ffffff;
+    }
+    .btn {
+      width: 100%;
+      padding: 10px 0;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      background: #2563eb;
+      color: #ffffff;
+      margin-top: 6px;
+      transition: transform 0.08s ease, box-shadow 0.1s ease, background 0.1s ease;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+    }
+    .btn:hover {
+      background: #1d4ed8;
+    }
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+    }
+    .error {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #dc2626;
+      text-align: center;
+      min-height: 16px;
+    }
+    .hint {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #9ca3af;
+      text-align: center;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">CreBiz YouTube Analytics Tool</div>
+    <div class="subtitle">
+      결제 완료 후 안내받은<br />
+      <b>아이디 / 비밀번호</b>를 입력해주세요.
+    </div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginId">아이디</label>
+        <input type="text" id="loginId" autocomplete="username" />
+      </div>
+      <div class="field">
+        <label for="loginPw">비밀번호</label>
+        <input type="password" id="loginPw" autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn">로그인</button>
+      <div class="error" id="errorMsg"></div>
+    </form>
+
+    <div class="hint">
+      🔒 이 페이지와 계정 정보는<br />
+      유료 회원 전용입니다. 외부 공유를 삼가 주세요.<br /><br />
+      <b>© DreamShare Inc. All rights reserved.</b>
+    </div>
+  </div>
+
+  <script>
+    // ✅ (선택) 도메인 락
+    (function domainLock() {
+      const allowed = ["localhost", "127.0.0.1", "visionary-biscochitos-fdcf17.netlify.app"];
+      const host = window.location.hostname;
+      if (!allowed.includes(host)) {
+        document.body.innerHTML =
+          "<h2 style='text-align:center;margin-top:80px;'>허용되지 않은 도메인입니다.</h2>";
+        throw new Error("Unauthorized domain: " + host);
+      }
+    })();
+
+    // ✅ 계정 목록 (실제 아이디/비번으로 교체해서 사용)
+    const USERS = [
+      { id: "admin", pw: "pw1!", name: "최고 관리자" },
+      { id: "lxy520619", pw: "luoxiaoyan1!", name: "Luoxiaoyan" },
+      { id: "share01", pw: "share01!", name: "share01" },
+      { id: "ljw", pw: "ljw1!", name: "이장욱" },
+      { id: "tjrwo21c", pw: "ksj1207!", name: "김석재" },
+      { id: "project88", pw: "project88!", name: "동서울대 프로젝트팀" },
+      { id: "hellojiyeon", pw: "hellojiyeon!", name: "김지연" },
+      { id: "kcsa3223", pw: "kcsa3223!", name: "이경천" }
+    ];
+
+    const AUTH_KEY = "yt_tool_auth_user";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // login.html = 강제 로그아웃용
+      try {
+        localStorage.removeItem(AUTH_KEY);
+      } catch (e) {}
+
+      const form = document.getElementById("loginForm");
+      const idInput = document.getElementById("loginId");
+      const pwInput = document.getElementById("loginPw");
+      const errorMsg = document.getElementById("errorMsg");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const id = (idInput.value || "").trim();
+        const pw = (pwInput.value || "").trim();
+
+        if (!id || !pw) {
+          errorMsg.textContent = "아이디와 비밀번호를 모두 입력해주세요.";
+          return;
+        }
+
+        const found = USERS.find((u) => u.id === id && u.pw === pw);
+        if (!found) {
+          errorMsg.textContent = "아이디 또는 비밀번호가 올바르지 않습니다.";
+          return;
+        }
+
+        try {
+          localStorage.setItem(
+            AUTH_KEY,
+            JSON.stringify({
+              id: found.id,
+              name: found.name,
+              loggedAt: new Date().toISOString()
+            })
+          );
+        } catch (e) {
+          // localStorage 실패해도 일단 이동
+        }
+
+        errorMsg.textContent = "";
+        window.location.href = "tool.html";
+      });
+    });
+  </script>
+</body>
+</html>
