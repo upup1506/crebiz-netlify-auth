@@ -4,13 +4,7 @@
   <meta charset="UTF-8" />
   <title>CreBiz YouTube Analytics Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!--
-    ⚠️ 중요 안내
-    - 이 페이지는 브라우저(클라이언트)에서 직접 YouTube Data API v3를 호출합니다.
-    - 따라서 API 키가 자바스크립트 코드와 네트워크 요청에 그대로 노출됩니다.
-    - 실제 서비스/배포용이 아닌, 개인 테스트·연구용으로만 사용하시길 권장합니다.
-    - 상용 서비스에서는 반드시 서버를 통해 API를 호출하고, API 키는 서버에서만 관리하세요.
-  -->
+  
   <style>
     * { box-sizing: border-box; }
     body {
@@ -647,6 +641,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const user = await requireLoginOrRedirect();
   if (!user) return;
 
+  
+  window.__currentUser = user;
   // ✅ 여기 아래부터는 "로그인 된 사용자만" 실행되는 영역
   console.log("로그인 사용자:", user);
 });
@@ -691,32 +687,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       return out;
     }
 
-    // 🔒 페이지 진입 시 로그인 여부 검사
-    (function enforceAuth() {
-      try {
-        const raw = localStorage.getItem(AUTH_KEY);
-        if (!raw) {
-          alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
-          window.location.href = "login.html";
-          return;
-        }
-        JSON.parse(raw); // 형식 체크
-      } catch (e) {
-        alert("로그인 정보가 유효하지 않습니다. 다시 로그인 해주세요.");
-        window.location.href = "login.html";
-      }
-    })();
+  // 서버(me)에서 받아온 로그인 유저를 여기에 저장
+window.__currentUser = null;
 
-    // 현재 로그인 유저 정보 가져오기
-    function getCurrentUser() {
-      try {
-        const raw = localStorage.getItem(AUTH_KEY);
-        if (!raw) return null;
-        return JSON.parse(raw);
-      } catch (e) {
-        return null;
-      }
-    }
+function getCurrentUser() {
+  return window.__currentUser; // {id, name}
+}
+
 
     function getApiKeyStorageKey() {
       const user = getCurrentUser();
@@ -1426,21 +1403,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function ensureAuthorizedForAction() {
-    try {
-      const raw = localStorage.getItem(AUTH_KEY);
-      if (!raw) {
-        alert("로그인 후 이용 가능합니다.");
-        window.location.href = "login.html";
-        return false;
-      }
-      JSON.parse(raw);
-      return true;
-    } catch (e) {
-      alert("로그인 세션이 만료되었습니다. 다시 로그인 해주세요.");
-      window.location.href = "login.html";
-      return false;
-    }
+  const user = getCurrentUser();
+  if (!user) {
+    window.location.replace("login.html");
+    return false;
   }
+  return true;
+}
 
   function getStoredApiKeyDecrypted() {
     const keyName = getApiKeyStorageKey();
@@ -2569,13 +2538,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 로그아웃 버튼
     if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        try {
-          localStorage.removeItem(AUTH_KEY);
-        } catch (e) {}
-        alert("로그아웃되었습니다.");
-        window.location.href = "login.html";
-      });
+logoutBtn.addEventListener("click", async () => {
+  try {
+    await fetch("/.netlify/functions/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch (e) {}
+
+  // (선택) 개인 API키는 남겨두고 싶으면 아래 줄들은 지우세요
+  // localStorage.clear(); // ❌ 절대 전체 삭제는 비추
+
+  window.location.replace("login.html?logged_out=1");
+});
     }
 
     // ⚙️ 설정 버튼 토글 (안내문+패널 같이)
