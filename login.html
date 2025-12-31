@@ -229,12 +229,12 @@
 
         const data = await res.json().catch(() => ({}));
 
-        if (!res.ok) {
-          // 서버가 구체 사유를 주더라도 프론트에서는 안전하게 표준 메시지만 노출
-          setMsg("Invalid credentials", "error");
-          btn.disabled = false;
-          return;
-        }
+if (!res.ok) {
+  console.warn("login failed:", res.status, data);
+  setMsg("Invalid credentials", "error");
+  btn.disabled = false;
+  return;
+}
 
         setMsg("로그인 성공! 이동 중...", "ok");
         // 쿠키가 저장되도록 약간의 틱을 두고 이동
