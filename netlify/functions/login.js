@@ -56,12 +56,15 @@ exports.handler = async (event) => {
     maxAge: 60 * 60 * 24 * 7
   });
 
-  return {
-    statusCode: 200,
-    headers: {
-      "Set-Cookie": sessionCookie,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ ok: true })
-  };
+return {
+  statusCode: 200,
+  multiValueHeaders: {
+    "Set-Cookie": [expired]
+  },
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ ok: true })
 };
+};
+
